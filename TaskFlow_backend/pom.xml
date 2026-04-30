@@ -11,6 +11,8 @@
         <module>ApiGateway</module>
         <module>Task_service</module>
         <module>Eureka</module>
+        <module>Team_service</module>
+
     </modules>
 
 </project>
