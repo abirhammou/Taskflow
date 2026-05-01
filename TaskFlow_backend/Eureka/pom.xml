@@ -9,11 +9,13 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.5</version>
+        <relativePath/>
     </parent>
 
     <groupId>com.taskflow</groupId>
     <artifactId>eureka-server</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <name>Eureka Server</name>
 
     <properties>
         <java.version>17</java.version>
@@ -28,7 +30,13 @@
             <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
         </dependency>
 
-        <!-- Web -->
+        <!-- Actuator (recommended) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Optional: only if you need UI/custom endpoints -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -56,4 +64,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
