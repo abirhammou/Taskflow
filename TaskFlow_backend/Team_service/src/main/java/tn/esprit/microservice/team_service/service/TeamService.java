@@ -1,10 +1,12 @@
 package tn.esprit.microservice.team_service.service;
 
-import tn.esprit.microservice.team_service.entity.Team;
-import tn.esprit.microservice.team_service.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tn.esprit.microservice.team_service.DTO.TeamDTO;
+import tn.esprit.microservice.team_service.entity.Team;
+import tn.esprit.microservice.team_service.repository.TeamRepository;
+
 import java.util.List;
 
 @Service
@@ -13,69 +15,146 @@ public class TeamService {
 
     private final TeamRepository teamRepository;
 
-    // Récupérer toutes les équipes
-    public List<Team> getAllTeams() {
-        return teamRepository.findAll();
+    // =========================
+    // GET ALL TEAMS
+    // =========================
+    public List<TeamDTO> getAllTeams() {
+        return teamRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
-    // Récupérer une équipe par son ID
-    public Team getTeamById(Long id) {
-        return teamRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Team non trouvée avec l'id: " + id));
+    // =========================
+    // GET BY ID
+    // =========================
+    public TeamDTO getTeamById(Long id) {
+        return toDTO(getEntityById(id));
     }
 
-    // Créer une nouvelle équipe
+    // =========================
+    // CREATE TEAM
+    // =========================
     @Transactional
-    public Team createTeam(Team team) {
-        if (teamRepository.existsByName(team.getName())) {
-            throw new RuntimeException("Une équipe avec le nom '" + team.getName() + "' existe déjà");
+    public TeamDTO createTeam(TeamDTO dto) {
+
+        if (teamRepository.existsByName(dto.getName())) {
+            throw new RuntimeException("Team already exists with name: " + dto.getName());
         }
-        return teamRepository.save(team);
+
+        Team team = toEntity(dto);
+        Team saved = teamRepository.save(team);
+
+        return toDTO(saved);
     }
 
-    // Mettre à jour une équipe
+    // =========================
+    // UPDATE TEAM
+    // =========================
     @Transactional
-    public Team updateTeam(Long id, Team teamDetails) {
-        Team team = getTeamById(id);
-        team.setName(teamDetails.getName());
-        team.setDescription(teamDetails.getDescription());
-        team.setDepartment(teamDetails.getDepartment());
-        team.setManagerId(teamDetails.getManagerId());
-        team.setMemberCount(teamDetails.getMemberCount());
-        team.setIsActive(teamDetails.getIsActive());
-        return teamRepository.save(team);
+    public TeamDTO updateTeam(Long id, TeamDTO dto) {
+
+        Team team = getEntityById(id);
+
+        team.setName(dto.getName());
+        team.setDescription(dto.getDescription());
+        team.setDepartment(dto.getDepartment());
+        team.setManagerId(dto.getManagerId());
+        team.setMemberCount(dto.getMemberCount());
+        team.setIsActive(dto.getIsActive());
+
+        return toDTO(teamRepository.save(team));
     }
 
-    // Supprimer une équipe
+    // =========================
+    // DELETE TEAM
+    // =========================
     @Transactional
     public void deleteTeam(Long id) {
-        Team team = getTeamById(id);
+        Team team = getEntityById(id);
         teamRepository.delete(team);
     }
 
-    // Récupérer les équipes par département
-    public List<Team> getTeamsByDepartment(String department) {
-        return teamRepository.findByDepartment(department);
+    // =========================
+    // GET BY DEPARTMENT
+    // =========================
+    public List<TeamDTO> getTeamsByDepartment(String department) {
+        return teamRepository.findByDepartment(department)
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
-    // Récupérer les équipes actives
-    public List<Team> getActiveTeams() {
-        return teamRepository.findByIsActiveTrue();
+    // =========================
+    // GET ACTIVE TEAMS
+    // =========================
+    public List<TeamDTO> getActiveTeams() {
+        return teamRepository.findByIsActiveTrue()
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
-    // Incrémenter le nombre de membres
+    // =========================
+    // INCREMENT MEMBER COUNT
+    // =========================
     @Transactional
-    public Team incrementMemberCount(Long id) {
-        Team team = getTeamById(id);
+    public TeamDTO incrementMemberCount(Long id) {
+        Team team = getEntityById(id);
         team.setMemberCount(team.getMemberCount() + 1);
-        return teamRepository.save(team);
+        return toDTO(teamRepository.save(team));
     }
 
-    // Décrémenter le nombre de membres
+    // =========================
+    // DECREMENT MEMBER COUNT
+    // =========================
     @Transactional
-    public Team decrementMemberCount(Long id) {
-        Team team = getTeamById(id);
+    public TeamDTO decrementMemberCount(Long id) {
+        Team team = getEntityById(id);
         team.setMemberCount(Math.max(0, team.getMemberCount() - 1));
-        return teamRepository.save(team);
+        return toDTO(teamRepository.save(team));
+    }
+
+    // =========================
+    // PRIVATE HELPERS
+    // =========================
+    private Team getEntityById(Long id) {
+        return teamRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Team not found with id: " + id));
+    }
+
+    // =========================
+    // ENTITY -> DTO
+    // =========================
+    private TeamDTO toDTO(Team team) {
+        TeamDTO dto = new TeamDTO();
+
+        dto.setId(team.getId());
+        dto.setName(team.getName());
+        dto.setDescription(team.getDescription());
+        dto.setDepartment(team.getDepartment());
+        dto.setManagerId(team.getManagerId());
+        dto.setMemberCount(team.getMemberCount());
+        dto.setIsActive(team.getIsActive());
+        dto.setCreatedAt(team.getCreatedAt());
+
+        return dto;
+    }
+
+    // =========================
+    // DTO -> ENTITY
+    // =========================
+    private Team toEntity(TeamDTO dto) {
+        Team team = new Team();
+
+        team.setId(dto.getId());
+        team.setName(dto.getName());
+        team.setDescription(dto.getDescription());
+        team.setDepartment(dto.getDepartment());
+        team.setManagerId(dto.getManagerId());
+        team.setMemberCount(dto.getMemberCount() != null ? dto.getMemberCount() : 0);
+        team.setIsActive(dto.getIsActive() != null ? dto.getIsActive() : true);
+
+        return team;
     }
 }

@@ -1,11 +1,12 @@
 package tn.esprit.microservice.team_service.controller;
 
-import tn.esprit.microservice.team_service.entity.Team;
-import tn.esprit.microservice.team_service.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tn.esprit.microservice.team_service.DTO.TeamDTO;
+import tn.esprit.microservice.team_service.service.TeamService;
+
 import java.util.List;
 
 @RestController
@@ -15,58 +16,76 @@ public class TeamController {
 
     private final TeamService teamService;
 
-    // GET toutes les équipes
+    // =========================
+    // GET ALL TEAMS
+    // =========================
     @GetMapping
-    public ResponseEntity<List<Team>> getAllTeams() {
+    public ResponseEntity<List<TeamDTO>> getAllTeams() {
         return ResponseEntity.ok(teamService.getAllTeams());
     }
 
-    // GET équipe par ID
+    // =========================
+    // GET BY ID
+    // =========================
     @GetMapping("/{id}")
-    public ResponseEntity<Team> getTeamById(@PathVariable Long id) {
+    public ResponseEntity<TeamDTO> getTeamById(@PathVariable Long id) {
         return ResponseEntity.ok(teamService.getTeamById(id));
     }
 
-    // POST créer une équipe
+    // =========================
+    // CREATE TEAM
+    // =========================
     @PostMapping
-    public ResponseEntity<Team> createTeam(@RequestBody Team team) {
-        return new ResponseEntity<>(teamService.createTeam(team), HttpStatus.CREATED);
+    public ResponseEntity<TeamDTO> createTeam(@RequestBody TeamDTO dto) {
+        return new ResponseEntity<>(teamService.createTeam(dto), HttpStatus.CREATED);
     }
 
-    // PUT mettre à jour une équipe
+    // =========================
+    // UPDATE TEAM
+    // =========================
     @PutMapping("/{id}")
-    public ResponseEntity<Team> updateTeam(@PathVariable Long id, @RequestBody Team team) {
-        return ResponseEntity.ok(teamService.updateTeam(id, team));
+    public ResponseEntity<TeamDTO> updateTeam(
+            @PathVariable Long id,
+            @RequestBody TeamDTO dto) {
+        return ResponseEntity.ok(teamService.updateTeam(id, dto));
     }
 
-    // DELETE supprimer une équipe
+    // =========================
+    // DELETE TEAM
+    // =========================
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTeam(@PathVariable Long id) {
         teamService.deleteTeam(id);
         return ResponseEntity.noContent().build();
     }
 
-    // GET équipes par département
+    // =========================
+    // GET BY DEPARTMENT
+    // =========================
     @GetMapping("/department/{department}")
-    public ResponseEntity<List<Team>> getTeamsByDepartment(@PathVariable String department) {
+    public ResponseEntity<List<TeamDTO>> getTeamsByDepartment(@PathVariable String department) {
         return ResponseEntity.ok(teamService.getTeamsByDepartment(department));
     }
 
-    // GET équipes actives seulement
+    // =========================
+    // GET ACTIVE TEAMS
+    // =========================
     @GetMapping("/active")
-    public ResponseEntity<List<Team>> getActiveTeams() {
+    public ResponseEntity<List<TeamDTO>> getActiveTeams() {
         return ResponseEntity.ok(teamService.getActiveTeams());
     }
 
-    // PUT incrémenter le nombre de membres
+    // =========================
+    // INCREMENT MEMBER COUNT
+    // =========================
     @PutMapping("/{id}/increment-members")
-    public ResponseEntity<Team> incrementMemberCount(@PathVariable Long id) {
+    public ResponseEntity<TeamDTO> incrementMemberCount(@PathVariable Long id) {
         return ResponseEntity.ok(teamService.incrementMemberCount(id));
     }
 
-    // PUT décrémenter le nombre de membres
+   
     @PutMapping("/{id}/decrement-members")
-    public ResponseEntity<Team> decrementMemberCount(@PathVariable Long id) {
+    public ResponseEntity<TeamDTO> decrementMemberCount(@PathVariable Long id) {
         return ResponseEntity.ok(teamService.decrementMemberCount(id));
     }
 }
