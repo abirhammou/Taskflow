@@ -13,11 +13,6 @@ public class TaskRestApi {
 
     private final ITaskService taskService;
 
-    @GetMapping("/")
-    public String home() {
-        return "Task Service is running 🚀";
-    }
-
     @PostMapping("/add")
     public Task addTask(@Valid @RequestBody TaskDTO taskDTO) {
         Task task = new Task();
@@ -59,4 +54,5 @@ public class TaskRestApi {
     public TaskStatsDTO getStats() {
         return taskService.getStats();
     }
+
 }
