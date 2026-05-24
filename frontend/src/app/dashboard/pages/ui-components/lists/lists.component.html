@@ -1,0 +1,135 @@
+<mat-card class="cardWithShadow theme-card">
+  <!-- Header -->
+  <mat-card-header class="d-flex justify-content-between align-items-center">
+    <mat-card-title class="m-b-0">Task Management</mat-card-title>
+
+    <!-- Search -->
+    <mat-form-field appearance="outline" class="w-25">
+      <mat-label>Search Task</mat-label>
+      <input matInput placeholder="Search by title..." />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </mat-card-header>
+
+  <mat-card-content class="b-t-1">
+
+    <!-- Statistics Cards -->
+    <div class="row m-t-20">
+
+      <div class="col-lg-3 col-sm-6">
+        <mat-card class="cardWithShadow text-center p-3 bg-light-primary">
+          <h2 class="f-w-600">25</h2>
+          <p>Total Tasks</p>
+        </mat-card>
+      </div>
+
+      <div class="col-lg-3 col-sm-6">
+        <mat-card class="cardWithShadow text-center p-3 bg-light-success">
+          <h2 class="f-w-600">12</h2>
+          <p>Completed</p>
+        </mat-card>
+      </div>
+
+      <div class="col-lg-3 col-sm-6">
+        <mat-card class="cardWithShadow text-center p-3 bg-light-warning">
+          <h2 class="f-w-600">8</h2>
+          <p>In Progress</p>
+        </mat-card>
+      </div>
+
+      <div class="col-lg-3 col-sm-6">
+        <mat-card class="cardWithShadow text-center p-3 bg-light-danger">
+          <h2 class="f-w-600">5</h2>
+          <p>Pending</p>
+        </mat-card>
+      </div>
+
+    </div>
+
+    <!-- Tasks Table -->
+    <div class="table-responsive m-t-30">
+      <table class="table align-middle text-nowrap mb-0">
+
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Task</th>
+            <th>Assigned To</th>
+            <th>Status</th>
+            <th>Deadline</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <td>#1</td>
+            <td>Frontend Dashboard</td>
+            <td>Abir</td>
+            <td>
+              <span class="bg-success text-white px-2 py-1 rounded">
+                Completed
+              </span>
+            </td>
+            <td>30 May 2026</td>
+            <td>
+              <button mat-icon-button color="primary">
+                <mat-icon>edit</mat-icon>
+              </button>
+
+              <button mat-icon-button color="warn">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>#2</td>
+            <td>Backend API</td>
+            <td>Ahmed</td>
+            <td>
+              <span class="bg-warning text-dark px-2 py-1 rounded">
+                In Progress
+              </span>
+            </td>
+            <td>02 June 2026</td>
+            <td>
+              <button mat-icon-button color="primary">
+                <mat-icon>edit</mat-icon>
+              </button>
+
+              <button mat-icon-button color="warn">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>#3</td>
+            <td>Database Setup</td>
+            <td>Sarra</td>
+            <td>
+              <span class="bg-danger text-white px-2 py-1 rounded">
+                Pending
+              </span>
+            </td>
+            <td>05 June 2026</td>
+            <td>
+              <button mat-icon-button color="primary">
+                <mat-icon>edit</mat-icon>
+              </button>
+
+              <button mat-icon-button color="warn">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+    </div>
+
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,12 @@
+.fo-footer {
+  background: #fff;
+  border-top: 1px solid #e8edf2;
+  padding: 20px 0;
+  .footer-link {
+    color: #4a5568;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 14px;
+    &:hover { color: #5d87ff; }
+  }
+}

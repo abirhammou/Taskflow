@@ -1,0 +1,31 @@
+.fo-team-card {
+  background: #fff; border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  overflow: hidden; transition: transform 0.2s, box-shadow 0.2s;
+  &:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+}
+
+.team-header {
+  height: 80px; display: flex; align-items: center;
+  justify-content: center;
+  .team-icon { font-size: 2.5rem; }
+}
+
+.team-body { padding: 20px; }
+.team-name { font-weight: 700; color: #2d3748; margin-bottom: 6px; }
+.team-desc { font-size: 13px; color: #718096; margin-bottom: 14px; }
+.team-tasks { font-size: 13px; color: #718096; }
+
+.member-avatars { display: flex; gap: 4px; }
+.avatar-circle {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #eef2ff; color: #5d87ff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600;
+}
+.avatar-more {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #e2e8f0; color: #718096;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+}
