@@ -1,0 +1,43 @@
+.fo-stat-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  position: relative;
+  overflow: hidden;
+  .stat-value { font-size: 2rem; font-weight: 700; color: #2d3748; }
+  .stat-label { font-size: 13px; color: #718096; margin-top: 2px; }
+  .stat-bar { height: 4px; border-radius: 2px; margin-top: 12px; }
+}
+
+.fo-tabs {
+  display: flex; gap: 8px;
+  .fo-tab {
+    border: 1px solid #e2e8f0; background: #fff;
+    border-radius: 20px; padding: 6px 18px;
+    font-size: 14px; cursor: pointer; color: #4a5568;
+    transition: all 0.2s;
+    &.active { background: #5d87ff; color: #fff; border-color: #5d87ff; }
+  }
+}
+
+.fo-task-list { display: flex; flex-direction: column; gap: 10px; }
+
+.fo-task-card {
+  background: #fff; border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: box-shadow 0.2s;
+  &:hover { box-shadow: 0 4px 16px rgba(93,135,255,0.15); }
+}
+
+.fo-checkbox { width: 18px; height: 18px; accent-color: #5d87ff; cursor: pointer; }
+.task-title { font-weight: 500; color: #2d3748; &.done { text-decoration: line-through; color: #a0aec0; } }
+.task-meta { font-size: 13px; color: #718096; }
+
+.fo-badge {
+  padding: 3px 10px; border-radius: 10px; font-size: 12px; font-weight: 600;
+  &.badge-high { background: #fff0f3; color: #fa5c7c; }
+  &.badge-medium { background: #fff8e6; color: #ffae1f; }
+  &.badge-low { background: #e6fff9; color: #13deb9; }
+}

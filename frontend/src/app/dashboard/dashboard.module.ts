@@ -52,7 +52,6 @@ import { MatNativeDateModule } from "@angular/material/core";
     MatButtonModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatCheckboxModule
   ]
 })
 export class DashboardModule {}

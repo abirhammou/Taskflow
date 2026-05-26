@@ -1,0 +1,43 @@
+<div class="container py-4">
+  <div class="fo-page-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h4 class="mb-1">Teams</h4>
+      <p class="text-muted mb-0">Collaborate with your team members</p>
+    </div>
+    <button class="btn btn-primary">+ New Team</button>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-6 col-lg-4" *ngFor="let team of teams">
+      <div class="fo-team-card">
+        <div class="team-header" [style.background]="team.color">
+          <span class="team-icon">{{ team.icon }}</span>
+        </div>
+        <div class="team-body">
+          <h6 class="team-name">{{ team.name }}</h6>
+          <p class="team-desc">{{ team.description }}</p>
+          <div class="team-meta d-flex justify-content-between align-items-center">
+            <div class="member-avatars">
+              <span class="avatar-circle" *ngFor="let m of team.members | slice:0:4"
+                    [title]="m">{{ m[0] }}</span>
+              <span class="avatar-more" *ngIf="team.members.length > 4">
+                +{{ team.members.length - 4 }}
+              </span>
+            </div>
+            <span class="team-tasks">{{ team.tasks }} tasks</span>
+          </div>
+          <div class="team-progress mt-3">
+            <div class="d-flex justify-content-between mb-1">
+              <small class="text-muted">Progress</small>
+              <small class="fw-bold">{{ team.progress }}%</small>
+            </div>
+            <div class="progress" style="height:6px;">
+              <div class="progress-bar" [style.width]="team.progress + '%'"
+                   [style.background]="team.color"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,51 @@
+<div class="container py-4">
+  <div class="fo-page-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h4 class="mb-1">My Tasks</h4>
+      <p class="text-muted mb-0">Track and manage your work</p>
+    </div>
+    <button class="btn btn-primary">+ New Task</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3" *ngFor="let stat of stats">
+      <div class="fo-stat-card">
+        <div class="stat-value">{{ stat.value }}</div>
+        <div class="stat-label">{{ stat.label }}</div>
+        <div class="stat-bar" [style.background]="stat.color"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div class="fo-tabs mb-3">
+    <button *ngFor="let tab of tabs"
+      class="fo-tab"
+      [class.active]="activeTab === tab"
+      (click)="activeTab = tab">
+      {{ tab }}
+    </button>
+  </div>
+
+  <!-- Task List -->
+  <div class="fo-task-list">
+    <div class="fo-task-card" *ngFor="let task of filteredTasks()">
+      <div class="d-flex align-items-start gap-3">
+        <input type="checkbox" class="fo-checkbox mt-1" [checked]="task.done"
+               (change)="task.done = !task.done">
+        <div class="flex-grow-1">
+          <div class="d-flex justify-content-between">
+            <span class="task-title" [class.done]="task.done">{{ task.title }}</span>
+            <span class="fo-badge" [ngClass]="'badge-' + task.priority">{{ task.priority }}</span>
+          </div>
+          <div class="task-meta mt-1">
+            <span class="me-3">📁 {{ task.project }}</span>
+            <span class="me-3">👤 {{ task.assignee }}</span>
+            <span>📅 {{ task.due }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

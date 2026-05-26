@@ -5,6 +5,11 @@ import { TaskService } from '../../../../services/task.service';
 import { Task, TaskStats } from '../../../../models/task.model';
 import { TaskDialogComponent } from '../../../../dialogs/task-dialog.component';
 
+export interface Section {
+  name: string;
+  updated: Date;
+}
+
 @Component({
   selector: 'app-lists',
   templateUrl: './lists.component.html',
@@ -133,3 +138,4 @@ export class AppListsComponent implements OnInit {
     this.snackBar.open(msg, 'Close', { duration: 5000, panelClass: 'error-snackbar' });
   }
 }
+

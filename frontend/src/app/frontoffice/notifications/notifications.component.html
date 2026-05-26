@@ -1,0 +1,25 @@
+<div class="container py-4">
+  <div class="fo-page-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h4 class="mb-1">Notifications</h4>
+      <p class="text-muted mb-0">Stay updated with your team activity</p>
+    </div>
+    <button class="btn btn-outline-secondary btn-sm" (click)="markAllRead()">
+      Mark all as read
+    </button>
+  </div>
+
+  <div class="fo-notif-list">
+    <div class="fo-notif-item" *ngFor="let n of notifications"
+         [class.unread]="!n.read" (click)="n.read = true">
+      <div class="notif-icon" [style.background]="n.color + '20'"
+           [style.color]="n.color">{{ n.icon }}</div>
+      <div class="flex-grow-1">
+        <div class="notif-title">{{ n.title }}</div>
+        <div class="notif-body">{{ n.body }}</div>
+        <div class="notif-time">{{ n.time }}</div>
+      </div>
+      <div class="unread-dot" *ngIf="!n.read"></div>
+    </div>
+  </div>
+</div>

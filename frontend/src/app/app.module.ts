@@ -3,8 +3,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+
 import { TaskDialogComponent } from './dialogs/task-dialog.component';
 import { HttpClientModule } from '@angular/common/http';
+
 
 @NgModule({
   declarations: [
@@ -14,6 +16,7 @@ import { HttpClientModule } from '@angular/common/http';
    imports: [
     BrowserModule,
     BrowserAnimationsModule,
+
     AppRoutingModule,
     TaskDialogComponent,
     HttpClientModule
