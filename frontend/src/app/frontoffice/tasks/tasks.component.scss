@@ -41,3 +41,12 @@
   &.badge-medium { background: #fff8e6; color: #ffae1f; }
   &.badge-low { background: #e6fff9; color: #13deb9; }
 }
+
+.btn-outline-primary, .btn-outline-danger {
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 20px;
+}
+.btn-outline-primary:hover { background: #5d87ff; color: white; }
+.btn-outline-danger:hover { background: #fa5c7c; color: white; }
+.form-control { border-radius: 20px; border: 1px solid #e2e8f0; padding: 8px 16px; }

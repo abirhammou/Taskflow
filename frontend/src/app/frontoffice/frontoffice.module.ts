@@ -12,6 +12,9 @@ import { NotificationsComponent } from './notifications/notifications.component'
 import { ProfileComponent } from './profile/profile.component';
 import { LayoutComponent } from './layout/layout.component';
 import { FormsModule } from '@angular/forms';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
+import { TaskDialogComponent } from '../dialogs/task-dialog.component';
 
 
 @NgModule({
@@ -24,12 +27,15 @@ import { FormsModule } from '@angular/forms';
     ProjectsComponent,
     NotificationsComponent,
     ProfileComponent,
-    LayoutComponent
+    LayoutComponent,
+    //TaskDialogComponent
   ],
   imports: [
     CommonModule,
     FrontofficeRoutingModule,
     FormsModule,
+    MatSnackBarModule,      // ✅ Add this
+    MatDialogModule, 
   ]
 })
 export class FrontofficeModule { }
