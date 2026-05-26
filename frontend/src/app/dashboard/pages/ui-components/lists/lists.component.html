@@ -1,0 +1,89 @@
+<mat-card class="cardWithShadow theme-card">
+  <mat-card-header class="d-flex justify-content-between align-items-center">
+    <mat-card-title class="m-b-0">Task Management</mat-card-title>
+    <div class="d-flex gap-3">
+      <button mat-raised-button color="primary" (click)="openTaskDialog()">
+        <mat-icon>add</mat-icon> New Task
+      </button>
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search Task</mat-label>
+        <input matInput placeholder="Search by title or description..."
+               [(ngModel)]="searchTerm" (input)="applyFilter()" />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+  </mat-card-header>
+
+  <mat-card-content class="b-t-1">
+    <!-- Statistics Cards -->
+    <div class="row m-t-20">
+      <div class="col-lg-3 col-sm-6">
+        <mat-card class="stats-card bg-light-primary">
+          <h2 class="f-w-600">{{ stats.totalTasks }}</h2>
+          <p>Total Tasks</p>
+        </mat-card>
+      </div>
+      <div class="col-lg-3 col-sm-6">
+        <mat-card class="stats-card bg-light-success">
+          <h2 class="f-w-600">{{ stats.completedTasks }}</h2>
+          <p>Completed</p>
+        </mat-card>
+      </div>
+      <div class="col-lg-3 col-sm-6">
+        <mat-card class="stats-card bg-light-warning">
+          <h2 class="f-w-600">{{ stats.pendingTasks }}</h2>
+          <p>Pending</p>
+        </mat-card>
+      </div>
+      <div class="col-lg-3 col-sm-6">
+        <mat-card class="stats-card bg-light-danger">
+          <h2 class="f-w-600">{{ stats.overdueTasks }}</h2>
+          <p>Overdue</p>
+        </mat-card>
+      </div>
+    </div>
+
+    <!-- Tasks Table -->
+    <div class="table-responsive m-t-30">
+      <table class="table align-middle text-nowrap mb-0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Deadline</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let task of filteredTasks">
+            <td>#{{ task.id }}</td>
+            <td>{{ task.title }}</td>
+            <td>{{ task.description }}</td>
+            <td>
+              <span class="status-badge" 
+                    [class.status-completed]="task.completed"
+                    [class.status-pending]="!task.completed"
+                    (click)="toggleStatus(task)">
+                {{ task.completed ? 'Completed' : 'Pending' }}
+              </span>
+            </td>
+            <td>{{ task.dueDate | date:'dd MMM yyyy' }}</td>
+            <td>
+              <button mat-icon-button color="primary" (click)="openTaskDialog(task)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="deleteTask(task.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="filteredTasks.length === 0">
+            <td colspan="6" class="text-center py-4">No tasks found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>
