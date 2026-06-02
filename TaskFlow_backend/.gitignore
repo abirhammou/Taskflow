@@ -34,3 +34,6 @@ build/
 "target/" 
 "production/" 
 "*.class" 
+"prixticket/" 
+"**/*.class" 
+"production/" 
