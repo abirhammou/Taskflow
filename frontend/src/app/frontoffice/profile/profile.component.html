@@ -1,1 +1,88 @@
-<p>profile works!</p>
+<div class="fo-profile-page">
+  <div class="container py-5">
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-primary"></div>
+    </div>
+
+    <div *ngIf="!loading && user">
+
+      <!-- Header Card -->
+      <div class="fo-profile-header mb-4">
+        <div class="fo-avatar">{{ getInitials() }}</div>
+        <div>
+          <h3 class="mb-0 fw-bold">{{ user.username }}</h3>
+          <span class="fo-role-badge" [class.admin]="user.role === 'ADMIN'">
+            {{ user.role }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Alerts -->
+      <div *ngIf="success" class="alert alert-success">✅ {{ success }}</div>
+      <div *ngIf="error"   class="alert alert-danger">❌ {{ error }}</div>
+
+      <!-- Form Card -->
+      <div class="fo-profile-card">
+        <h5 class="fo-card-title">Edit Profile</h5>
+        <form [formGroup]="form" (ngSubmit)="submit()">
+
+          <div class="row g-3">
+            <!-- Username -->
+            <div class="col-md-6">
+              <label class="fo-label">Username</label>
+              <input formControlName="username" type="text" class="form-control fo-input"
+                     [class.is-invalid]="f['username'].invalid && f['username'].touched" />
+              <div class="invalid-feedback">Username is required (min 3 chars)</div>
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6">
+              <label class="fo-label">Email</label>
+              <input formControlName="email" type="email" class="form-control fo-input"
+                     [class.is-invalid]="f['email'].invalid && f['email'].touched" />
+              <div class="invalid-feedback">Valid email is required</div>
+            </div>
+
+            <!-- Role (read-only) -->
+            <div class="col-md-6">
+              <label class="fo-label">Role</label>
+              <input type="text" class="form-control fo-input" [value]="user.role" readonly />
+            </div>
+
+            <!-- Member since -->
+            <div class="col-md-6">
+              <label class="fo-label">Member Since</label>
+              <input type="text" class="form-control fo-input"
+                     [value]="user.createdAt | date:'mediumDate'" readonly />
+            </div>
+
+            <!-- New Password -->
+            <div class="col-md-6">
+              <label class="fo-label">New Password <span class="text-muted">(optional)</span></label>
+              <input formControlName="password" type="password" class="form-control fo-input"
+                     placeholder="Leave blank to keep current" />
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="col-md-6">
+              <label class="fo-label">Confirm Password</label>
+              <input formControlName="confirmPassword" type="password" class="form-control fo-input"
+                     [class.is-invalid]="form.hasError('mismatch') && f['confirmPassword'].touched" />
+              <div class="invalid-feedback">Passwords do not match</div>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <button type="submit" class="btn btn-primary fo-btn-primary px-4"
+                    [disabled]="saving || form.invalid">
+              {{ saving ? 'Saving...' : 'Save Changes' }}
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

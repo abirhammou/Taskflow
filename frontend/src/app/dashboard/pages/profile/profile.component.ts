@@ -30,10 +30,7 @@ export class ProfileComponent implements OnInit {
     this.auth.getProfile(currentUser.id).subscribe({
       next: (user) => {
         this.user = user;
-        this.form.patchValue({
-          username: user.username,
-          email:    user.email,
-        });
+        this.form.patchValue({ username: user.username, email: user.email });
         this.loading = false;
       },
       error: () => {
@@ -48,17 +45,14 @@ export class ProfileComponent implements OnInit {
   passwordMatchValidator(g: any) {
     const pw  = g.get('password').value;
     const cpw = g.get('confirmPassword').value;
-    if (!pw) return null; // password is optional
+    if (!pw) return null;
     return pw === cpw ? null : { mismatch: true };
   }
 
   getInitials(): string {
     if (!this.user?.username) return '?';
     return this.user.username.split(' ')
-      .map((n: string) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
+      .map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
   }
 
   submit() {
@@ -77,7 +71,6 @@ export class ProfileComponent implements OnInit {
 
     this.auth.updateProfile(this.user._id, payload).subscribe({
       next: (res) => {
-        // update localStorage with new user data
         localStorage.setItem('user', JSON.stringify(res.user));
         this.success = 'Profile updated successfully!';
         this.saving  = false;
