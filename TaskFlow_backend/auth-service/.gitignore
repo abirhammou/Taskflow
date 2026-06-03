@@ -1,0 +1,3 @@
+echo node_modules/ > auth-service/.gitignore
+echo package-lock.json >> auth-service/.gitignore
+echo .env >> auth-service/.gitignore
