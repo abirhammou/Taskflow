@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 import { FrontofficeRoutingModule } from './frontoffice-routing.module';
 import { LandingComponent } from './landing/landing.component';
@@ -11,11 +13,9 @@ import { ProjectsComponent } from './projects/projects.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { ProfileComponent } from './profile/profile.component';
 import { LayoutComponent } from './layout/layout.component';
-import { FormsModule } from '@angular/forms';
+
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
-import { TaskDialogComponent } from '../dialogs/task-dialog.component';
-
 
 @NgModule({
   declarations: [
@@ -28,14 +28,15 @@ import { TaskDialogComponent } from '../dialogs/task-dialog.component';
     NotificationsComponent,
     ProfileComponent,
     LayoutComponent,
-    //TaskDialogComponent
   ],
   imports: [
-    CommonModule,
-    FrontofficeRoutingModule,
+    CommonModule,           // ← fixes date pipe, ngClass, *ngIf, *ngFor
+    RouterModule,           // ← fixes router-outlet
     FormsModule,
-    MatSnackBarModule,      // ✅ Add this
-    MatDialogModule, 
+    ReactiveFormsModule,    // ← fixes [formGroup] — must be in imports not declarations
+    FrontofficeRoutingModule,
+    MatSnackBarModule,
+    MatDialogModule,
   ]
 })
 export class FrontofficeModule { }

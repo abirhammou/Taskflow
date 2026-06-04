@@ -25,7 +25,10 @@ public class ApiGatewayApplication {
         return builder.routes()
                 .route("task-service", r -> r.path("/task/**")
                         .uri("http://localhost:8081"))
+                .route("auth-service", r -> r.path("/auth/**")
+                        .uri("http://localhost:3000"))
                 .build();
+
     }
 
     @Bean
