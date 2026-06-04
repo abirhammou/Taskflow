@@ -32,7 +32,7 @@
         <module>Task_service</module>
         <module>Eureka</module>
         <module>Team_service</module>
-        <module>prixticket</module>
+
     </modules>
 
     <dependencyManagement>

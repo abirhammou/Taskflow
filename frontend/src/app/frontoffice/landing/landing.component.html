@@ -1,0 +1,135 @@
+<!-- HERO -->
+<section class="fo-hero">
+  <div class="container">
+    <div class="row align-items-center min-vh-80">
+      <div class="col-lg-6">
+        <span class="fo-badge-pill mb-3">✦ Task Management Platform</span>
+        <h1 class="fo-hero-title">
+          Manage Tasks,<br>
+          <span class="text-primary">Teams & Projects</span><br>
+          All in One Place
+        </h1>
+        <p class="fo-hero-subtitle">
+          TaskFlow helps teams collaborate, track progress, and deliver projects on time — with a clean, intuitive interface built for modern teams.
+        </p>
+        <div class="d-flex gap-3 flex-wrap">
+          <a routerLink="/app/tasks" class="btn btn-primary btn-lg fo-btn-primary">
+            Get Started Free →
+          </a>
+          <a routerLink="/dashboard" class="btn btn-outline-secondary btn-lg">
+            View Dashboard
+          </a>
+        </div>
+        <div class="fo-hero-stats mt-5 d-flex gap-4 flex-wrap">
+          <div class="fo-stat">
+            <span class="stat-num">500+</span>
+            <span class="stat-text">Teams</span>
+          </div>
+          <div class="fo-stat">
+            <span class="stat-num">12k+</span>
+            <span class="stat-text">Tasks Done</span>
+          </div>
+          <div class="fo-stat">
+            <span class="stat-num">99%</span>
+            <span class="stat-text">Satisfaction</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 mt-5 mt-lg-0">
+        <div class="fo-hero-mockup">
+          <div class="mockup-card">
+            <div class="mockup-header">
+              <span class="mockup-dot red"></span>
+              <span class="mockup-dot yellow"></span>
+              <span class="mockup-dot green"></span>
+              <span class="ms-3 text-muted small">TaskFlow — My Tasks</span>
+            </div>
+            <div class="mockup-body">
+              <div class="mockup-task done">
+                <span class="mockup-check">✓</span> Design new landing page
+                <span class="mockup-tag blue">Frontend</span>
+              </div>
+              <div class="mockup-task active">
+                <span class="mockup-check empty"></span> Fix login API bug
+                <span class="mockup-tag red">High</span>
+              </div>
+              <div class="mockup-task">
+                <span class="mockup-check empty"></span> Set up CI/CD pipeline
+                <span class="mockup-tag yellow">DevOps</span>
+              </div>
+              <div class="mockup-task">
+                <span class="mockup-check empty"></span> Write unit tests
+                <span class="mockup-tag green">QA</span>
+              </div>
+              <div class="mockup-progress mt-3">
+                <div class="d-flex justify-content-between mb-1">
+                  <small>Project Progress</small><small class="text-primary fw-bold">68%</small>
+                </div>
+                <div class="progress" style="height:8px;border-radius:4px;">
+                  <div class="progress-bar bg-primary" style="width:68%;border-radius:4px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="fo-features py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="fo-badge-pill mb-2">Features</span>
+      <h2 class="fo-section-title">Everything your team needs</h2>
+      <p class="fo-section-subtitle">A complete toolkit to manage work from idea to delivery</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4" *ngFor="let f of features">
+        <div class="fo-feature-card">
+          <div class="feature-icon" [style.background]="f.color + '20'" [style.color]="f.color">
+            {{ f.icon }}
+          </div>
+          <h5 class="feature-title">{{ f.title }}</h5>
+          <p class="feature-desc">{{ f.desc }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="fo-steps py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="fo-badge-pill mb-2">How it works</span>
+      <h2 class="fo-section-title">Up and running in minutes</h2>
+    </div>
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-4" *ngFor="let step of steps; let i = index">
+        <div class="fo-step-card text-center">
+          <div class="step-number">{{ i + 1 }}</div>
+          <div class="step-icon">{{ step.icon }}</div>
+          <h5 class="mt-3">{{ step.title }}</h5>
+          <p class="text-muted">{{ step.desc }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="fo-cta py-5">
+  <div class="container">
+    <div class="fo-cta-card text-center">
+      <h2 class="text-white mb-3">Ready to get organized?</h2>
+      <p class="text-white opacity-75 mb-4">
+        Join thousands of teams already using TaskFlow to ship faster and collaborate better.
+      </p>
+      <a routerLink="/app/tasks" class="btn btn-white btn-lg">
+        Start for Free →
+      </a>
+    </div>
+  </div>
+</section>

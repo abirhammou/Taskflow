@@ -1,0 +1,45 @@
+.fo-navbar {
+  background: #fff;
+  border-bottom: 1px solid #e8edf2;
+  padding: 12px 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  .navbar-brand {
+    color: #5d87ff;
+    font-size: 1.3rem;
+    .brand-icon { margin-right: 6px; }
+  }
+
+  .nav-link {
+    color: #4a5568;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    position: relative;
+    &:hover, &.active {
+      color: #5d87ff;
+      background: #eef2ff;
+    }
+  }
+
+  .notif-badge {
+    background: #fa5c7c;
+    color: white;
+    border-radius: 10px;
+    padding: 1px 6px;
+    font-size: 11px;
+    margin-left: 4px;
+  }
+
+  .avatar-img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    margin-right: 6px;
+    object-fit: cover;
+  }
+}

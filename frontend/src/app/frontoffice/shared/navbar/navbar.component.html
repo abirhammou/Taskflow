@@ -1,0 +1,42 @@
+<nav class="fo-navbar navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand fw-bold" routerLink="/">
+      <span class="brand-icon">✦</span> TaskFlow
+    </a>
+    <button class="navbar-toggler" type="button" (click)="toggleMenu()">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" [class.show]="menuOpen">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/app/tasks" routerLinkActive="active">Tasks</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/app/teams" routerLinkActive="active">Teams</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/app/projects" routerLinkActive="active">Projects</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/app/notifications" routerLinkActive="active">
+            Notifications
+            <span class="notif-badge">3</span>
+          </a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/app/profile">
+            <img src="assets/images/profile/user-1.jpg"
+                 class="avatar-img"
+                 onerror="this.src='https://ui-avatars.com/api/?name=User&background=5d87ff&color=fff'">
+            My Profile
+          </a>
+        </li>
+        <li class="nav-item ms-2">
+          <a class="btn btn-outline-primary btn-sm" routerLink="/dashboard">Admin</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
