@@ -9,7 +9,7 @@ const routes: Routes = [
       import('./frontoffice/frontoffice.module').then(m => m.FrontofficeModule)
   },
   {
-    path: 'authentication',  // ← MOVED HERE, outside AdminGuard
+    path: 'authentication',
     loadChildren: () =>
       import('./dashboard/pages/authentication/authentication.module').then(
         m => m.AuthenticationModule
@@ -20,6 +20,10 @@ const routes: Routes = [
     canActivate: [AdminGuard],
     loadChildren: () =>
       import('./dashboard/dashboard.module').then(m => m.DashboardModule)
+  },
+  {
+    path: '**',
+    redirectTo: ''
   }
 ];
 

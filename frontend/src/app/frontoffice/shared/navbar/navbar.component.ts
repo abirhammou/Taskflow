@@ -8,23 +8,22 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class NavbarComponent implements OnInit {
 
-  menuOpen = false;
-  username = '';
+  menuOpen  = false;
+  username  = '';
   avatarUrl = '';
-  isAdmin = false;
+  isAdmin   = false;
 
   constructor(private auth: AuthService) {}
 
   ngOnInit() {
     const user = this.auth.getUser();
     if (user) {
-      this.username  = user.username;
-      this.isAdmin   = user.role === 'ADMIN';
-      this.avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=5d87ff&color=fff&rounded=true`;
+      this.username  = user['preferred_username'] || '';
+      this.isAdmin   = this.auth.isAdmin();
+      this.avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(this.username)}&background=5d87ff&color=fff&rounded=true`;
     }
   }
 
   toggleMenu() { this.menuOpen = !this.menuOpen; }
-
-  logout() { this.auth.logout(); }
+  logout()     { this.auth.logout(); }
 }

@@ -13,7 +13,7 @@ import { AuthService } from 'src/app/services/auth.service';
 export class HeaderComponent implements OnInit {
   @Input() showToggle = true;
   @Input() toggleChecked = false;
-  @Output() toggleMobileNav      = new EventEmitter<void>();
+  @Output() toggleMobileNav       = new EventEmitter<void>();
   @Output() toggleMobileFilterNav = new EventEmitter<void>();
   @Output() toggleCollapsed       = new EventEmitter<void>();
 
@@ -26,8 +26,8 @@ export class HeaderComponent implements OnInit {
   ngOnInit() {
     const user = this.auth.getUser();
     if (user) {
-      this.username  = user.username;
-      this.avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=5d87ff&color=fff&rounded=true`;
+      this.username  = user['preferred_username'] || '';
+      this.avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(this.username)}&background=5d87ff&color=fff&rounded=true`;
     }
   }
 

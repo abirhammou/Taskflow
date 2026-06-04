@@ -6,20 +6,20 @@ import { AuthService } from '../services/auth.service';
 export class AuthGuard implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
 
-  canActivate(): boolean {
+  async canActivate(): Promise<boolean> {
+    await this.auth.init(); // ← wait for Keycloak before checking
+
     if (!this.auth.isLoggedIn()) {
-      this.router.navigate(['/authentication/login']);
+      this.auth.login(); // redirect to Keycloak login
       return false;
     }
 
-    // Already logged in → redirect based on role
     if (this.auth.isAdmin()) {
       this.router.navigate(['/dashboard']);
-    } else {
-      return true; // allow access to /app/tasks
+      return false;
     }
 
-    return false;
+    return true;
   }
 }
 
@@ -27,13 +27,19 @@ export class AuthGuard implements CanActivate {
 export class AdminGuard implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
 
-  canActivate(): boolean {
+  async canActivate(): Promise<boolean> {
+    await this.auth.init(); // ← wait for Keycloak before checking
+
     if (!this.auth.isLoggedIn()) {
-      this.router.navigate(['/authentication/login']);
+      this.auth.loginAsAdmin(); // redirect to Keycloak login
       return false;
     }
-    if (this.auth.isAdmin()) return true;
-    this.router.navigate(['/app/tasks']); // logged in but not admin
+
+    if (this.auth.isAdmin()) {
+      return true;
+    }
+
+    this.router.navigate(['/app/tasks']);
     return false;
   }
 }

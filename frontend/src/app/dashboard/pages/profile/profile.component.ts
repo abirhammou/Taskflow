@@ -10,10 +10,10 @@ import { AuthService } from 'src/app/services/auth.service';
 export class ProfileComponent implements OnInit {
 
   user: any = null;
-  loading = false;
-  saving  = false;
-  success = '';
-  error   = '';
+  loading   = false;
+  saving    = false;
+  success   = '';
+  error     = '';
 
   form = new FormGroup({
     username:        new FormControl('', [Validators.required, Validators.minLength(3)]),
@@ -24,11 +24,25 @@ export class ProfileComponent implements OnInit {
 
   constructor(private auth: AuthService) {}
 
-  ngOnInit() {
+  ngOnInit() {   // ← fixed typo (was nngOnInit)
     this.loading = true;
     const currentUser = this.auth.getUser();
-    this.auth.getProfile(currentUser.id).subscribe({
-      next: (user) => {
+
+    if (!currentUser) {
+      this.error   = 'Not logged in';
+      this.loading = false;
+      return;
+    }
+
+    const email = currentUser['email'] as string;  // ← use email not sub
+    if (!email) {
+      this.error   = 'No email found in token';
+      this.loading = false;
+      return;
+    }
+
+    this.auth.getProfileByEmail(email).subscribe({  // ← use new method
+      next: (user: any) => {
         this.user = user;
         this.form.patchValue({ username: user.username, email: user.email });
         this.loading = false;
@@ -70,14 +84,13 @@ export class ProfileComponent implements OnInit {
     }
 
     this.auth.updateProfile(this.user._id, payload).subscribe({
-      next: (res) => {
-        localStorage.setItem('user', JSON.stringify(res.user));
+      next: (res: any) => {
         this.success = 'Profile updated successfully!';
         this.saving  = false;
         this.f['password'].setValue('');
         this.f['confirmPassword'].setValue('');
       },
-      error: (err) => {
+      error: (err: any) => {
         this.error  = err.error?.message || 'Update failed';
         this.saving = false;
       }
