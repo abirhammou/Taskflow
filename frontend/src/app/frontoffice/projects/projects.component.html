@@ -1,0 +1,43 @@
+<div class="container py-4">
+  <div class="fo-page-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h4 class="mb-1">Projects</h4>
+      <p class="text-muted mb-0">All your active and completed projects</p>
+    </div>
+    <button class="btn btn-primary">+ New Project</button>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-6" *ngFor="let project of projects">
+      <div class="fo-project-card">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <div>
+            <span class="project-icon me-2">{{ project.icon }}</span>
+            <span class="project-name">{{ project.name }}</span>
+          </div>
+          <span class="fo-status-badge" [ngClass]="'status-' + project.status">
+            {{ project.status }}
+          </span>
+        </div>
+        <p class="project-desc">{{ project.description }}</p>
+        <div class="project-progress mb-3">
+          <div class="d-flex justify-content-between mb-1">
+            <small class="text-muted">{{ project.completedTasks }}/{{ project.totalTasks }} tasks</small>
+            <small class="fw-bold" [style.color]="project.color">{{ project.progress }}%</small>
+          </div>
+          <div class="progress" style="height:8px;border-radius:4px;">
+            <div class="progress-bar" [style.width]="project.progress + '%'"
+                 [style.background]="project.color" style="border-radius:4px;"></div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="member-avatars">
+            <span class="avatar-circle" *ngFor="let m of project.team | slice:0:3"
+                  [title]="m">{{ m[0] }}</span>
+          </div>
+          <small class="text-muted">Due {{ project.due }}</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
