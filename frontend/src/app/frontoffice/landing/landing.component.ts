@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-landing',
@@ -6,6 +8,29 @@ import { Component } from '@angular/core';
   styleUrls: ['./landing.component.scss']
 })
 export class LandingComponent {
+
+  constructor(private auth: AuthService, private router: Router) {}
+
+  goToApp() {
+      console.log('isLoggedIn:', this.auth.isLoggedIn());
+      console.log('token:', localStorage.getItem('token'));
+      
+      if (!this.auth.isLoggedIn()) {
+        this.router.navigate(['/authentication/login']);
+      } else {
+        this.router.navigate(['/app/tasks']);
+      }
+    }
+
+  goToDashboard() {
+    if (!this.auth.isLoggedIn()) {
+      this.router.navigate(['/authentication/login']);
+    } else if (this.auth.isAdmin()) {
+      this.router.navigate(['/dashboard']);
+    } else {
+      this.router.navigate(['/app/tasks']); // user trying to access dashboard
+    }
+  }
 
   features = [
     { icon: '✅', title: 'Task Management', desc: 'Create, assign and track tasks with priorities, due dates and status updates.', color: '#5d87ff' },

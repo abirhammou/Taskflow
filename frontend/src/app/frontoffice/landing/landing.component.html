@@ -13,10 +13,10 @@
           TaskFlow helps teams collaborate, track progress, and deliver projects on time — with a clean, intuitive interface built for modern teams.
         </p>
         <div class="d-flex gap-3 flex-wrap">
-          <a routerLink="/app/tasks" class="btn btn-primary btn-lg fo-btn-primary">
+          <a (click)="goToApp()" class="btn btn-primary btn-lg fo-btn-primary" style="cursor:pointer">
             Get Started Free →
           </a>
-          <a routerLink="/dashboard" class="btn btn-outline-secondary btn-lg">
+          <a (click)="goToDashboard()" class="btn btn-outline-secondary btn-lg" style="cursor:pointer">
             View Dashboard
           </a>
         </div>
@@ -127,7 +127,7 @@
       <p class="text-white opacity-75 mb-4">
         Join thousands of teams already using TaskFlow to ship faster and collaborate better.
       </p>
-      <a routerLink="/app/tasks" class="btn btn-white btn-lg">
+      <a (click)="goToApp()" class="btn btn-white btn-lg" style="cursor:pointer">
         Start for Free →
       </a>
     </div>

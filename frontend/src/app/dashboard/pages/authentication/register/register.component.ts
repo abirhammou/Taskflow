@@ -1,26 +1,14 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
 })
 export class AppSideRegisterComponent {
-  constructor(private router: Router) {}
+  constructor(private auth: AuthService) {}
 
-  form = new FormGroup({
-    uname: new FormControl('', [Validators.required, Validators.minLength(6)]),
-    email: new FormControl('', [Validators.required]),
-    password: new FormControl('', [Validators.required]),
-  });
-
-  get f() {
-    return this.form.controls;
-  }
-
-  submit() {
-    // console.log(this.form.value);
-    this.router.navigate(['/dashboard']);
+  register() {
+    this.auth.keycloakRegister(); // redirects to Keycloak register page
   }
 }
