@@ -4,7 +4,7 @@
 ```bash
 docker-compose up -d
 ```
-Wait 30 seconds, then open http://localhost:8080/admin (admin/admin)
+Wait 30 seconds, then open http://localhost:8096/admin (admin/admin)
 
 ### 2. Start auth-service
 ```bash

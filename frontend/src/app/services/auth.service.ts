@@ -11,7 +11,7 @@ export class AuthService {
 
   constructor(private http: HttpClient) {
     this.keycloak = new Keycloak({
-      url: 'http://localhost:8080',
+      url: 'http://localhost:8096',
       realm: 'taskflow',
       clientId: 'taskflow-app'
     });
