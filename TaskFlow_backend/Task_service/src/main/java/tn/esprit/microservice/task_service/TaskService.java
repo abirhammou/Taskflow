@@ -2,6 +2,7 @@ package tn.esprit.microservice.task_service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import tn.esprit.microservice.task_service.messaging.TaskEventPublisher;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
 public class TaskService implements ITaskService{
 
     private final TaskRepository taskRepository;
+    private final TaskEventPublisher taskEventPublisher;
 
     @Override
     public Task addTask(Task task) {
@@ -18,22 +20,49 @@ public class TaskService implements ITaskService{
 
     @Override
     public Task updateTask(Long id, Task task) {
+
         Task existingTask = taskRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        boolean wasCompleted = existingTask.isCompleted(); // état avant update
 
         existingTask.setTitle(task.getTitle());
         existingTask.setDescription(task.getDescription());
         existingTask.setDueDate(task.getDueDate());
         existingTask.setCompleted(task.isCompleted());
 
-        return taskRepository.save(existingTask);
+        Task saved = taskRepository.save(existingTask);
+
+        // =========================
+        // RABBITMQ EVENT
+        // =========================
+        if (!wasCompleted && saved.isCompleted() && saved.getTeamId() != null) {
+            taskEventPublisher.publishTaskCompleted(saved.getTeamId());
+        }
+
+        return saved;
     }
+
+
+
+
+
 
     @Override
     public void deleteTask(Long id) {
-        taskRepository.deleteById(id);
-    }
 
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        taskRepository.deleteById(id);
+
+        // =========================
+        // RABBITMQ EVENT
+        // =========================
+        if (task.getTeamId() != null) {
+            taskEventPublisher.publishTaskDeleted(task.getTeamId());
+        }
+    }
     @Override
     public Task getTaskById(Long id) {
         return taskRepository.findById(id)

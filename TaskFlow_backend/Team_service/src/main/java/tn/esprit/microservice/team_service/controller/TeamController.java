@@ -1,4 +1,5 @@
 package tn.esprit.microservice.team_service.controller;
+import tn.esprit.microservice.team_service.client.TaskFeignClient;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,8 @@ import java.util.List;
 public class TeamController {
 
     private final TeamService teamService;
+    private final TaskFeignClient taskFeignClient;
+
 
     // =========================
     // GET ALL TEAMS
@@ -87,5 +90,24 @@ public class TeamController {
     @PutMapping("/{id}/decrement-members")
     public ResponseEntity<TeamDTO> decrementMemberCount(@PathVariable Long id) {
         return ResponseEntity.ok(teamService.decrementMemberCount(id));
+    }
+
+
+    // FEIGN - GET ALL TASKS
+    @GetMapping("/feign/tasks")
+    public ResponseEntity<List<Object>> getAllTasks() {
+        return ResponseEntity.ok(taskFeignClient.getAllTasks());
+    }
+
+    // FEIGN - GET TASK STATS
+    @GetMapping("/feign/tasks/stats")
+    public ResponseEntity<Object> getTaskStats() {
+        return ResponseEntity.ok(taskFeignClient.getTaskStats());
+    }
+
+    // FEIGN - GET TASK BY ID
+    @GetMapping("/feign/tasks/{id}")
+    public ResponseEntity<Object> getTaskById(@PathVariable Long id) {
+        return ResponseEntity.ok(taskFeignClient.getTaskById(id));
     }
 }

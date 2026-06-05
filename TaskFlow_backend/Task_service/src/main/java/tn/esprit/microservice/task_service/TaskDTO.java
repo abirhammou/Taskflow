@@ -22,4 +22,5 @@ public class TaskDTO {
     private LocalDate dueDate;
 
     private boolean completed;
+    private Long teamId;
 }

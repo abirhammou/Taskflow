@@ -20,7 +20,7 @@ public class TaskRestApi {
         task.setDescription(taskDTO.getDescription());
         task.setDueDate(taskDTO.getDueDate());
         task.setCompleted(taskDTO.isCompleted());
-
+        task.setTeamId(taskDTO.getTeamId());
         return taskService.addTask(task);
     }
 
@@ -31,7 +31,7 @@ public class TaskRestApi {
         task.setDescription(taskDTO.getDescription());
         task.setDueDate(taskDTO.getDueDate());
         task.setCompleted(taskDTO.isCompleted());
-
+        task.setTeamId(taskDTO.getTeamId());
         return taskService.updateTask(id, task);
     }
 

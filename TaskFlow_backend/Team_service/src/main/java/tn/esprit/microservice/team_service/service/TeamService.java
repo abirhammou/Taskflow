@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.microservice.team_service.DTO.TeamDTO;
 import tn.esprit.microservice.team_service.entity.Team;
+import tn.esprit.microservice.team_service.messaging.TeamEventPublisher;
 import tn.esprit.microservice.team_service.repository.TeamRepository;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 public class TeamService {
 
     private final TeamRepository teamRepository;
+    private final TeamEventPublisher teamEventPublisher;
 
     // =========================
     // GET ALL TEAMS
@@ -45,6 +47,9 @@ public class TeamService {
         Team team = toEntity(dto);
         Team saved = teamRepository.save(team);
 
+        // (optionnel event création)
+        // tu peux ajouter un publisher plus tard
+
         return toDTO(saved);
     }
 
@@ -63,38 +68,30 @@ public class TeamService {
         team.setMemberCount(dto.getMemberCount());
         team.setIsActive(dto.getIsActive());
 
-        return toDTO(teamRepository.save(team));
+        Team updated = teamRepository.save(team);
+
+        return toDTO(updated);
     }
 
     // =========================
-    // DELETE TEAM
+    // DELETE TEAM + RABBITMQ EVENT
     // =========================
     @Transactional
     public void deleteTeam(Long id) {
-        Team team = getEntityById(id);
-        teamRepository.delete(team);
-    }
 
-    // =========================
-    // GET BY DEPARTMENT
-    // =========================
-    public List<TeamDTO> getTeamsByDepartment(String department) {
-        return teamRepository.findByDepartment(department)
-                .stream()
-                .map(this::toDTO)
-                .toList();
-    }
+        teamRepository.findById(id).ifPresentOrElse(team -> {
 
-    // =========================
-    // GET ACTIVE TEAMS
-    // =========================
-    public List<TeamDTO> getActiveTeams() {
-        return teamRepository.findByIsActiveTrue()
-                .stream()
-                .map(this::toDTO)
-                .toList();
-    }
+            teamRepository.delete(team);
 
+            // RabbitMQ event
+            teamEventPublisher.publishTeamDeleted(id);
+
+            System.out.println("✅ Team deleted: " + id);
+
+        }, () -> {
+            System.out.println("⚠️ Team already deleted or not found: " + id);
+        });
+    }
     // =========================
     // INCREMENT MEMBER COUNT
     // =========================
