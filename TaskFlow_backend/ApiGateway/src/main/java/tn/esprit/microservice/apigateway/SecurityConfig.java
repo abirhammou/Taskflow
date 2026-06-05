@@ -22,6 +22,10 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeExchange(exchanges -> exchanges
+                        // ✅ Swagger - ajouter ces lignes AVANT les autres
+                        .pathMatchers("/swagger-ui/**", "/swagger-ui.html",
+                                "/v3/api-docs/**", "/webjars/**",
+                                "/*/v3/api-docs").permitAll()
                         .pathMatchers("/auth/**").permitAll()
                         .pathMatchers("/task/**").authenticated()
                         .anyExchange().authenticated()

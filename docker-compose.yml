@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.1
     command: start-dev --import-realm
@@ -11,3 +12,67 @@ services:
       - "8096:8080"
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+    networks:
+      - taskflow-net
+
+  eureka:
+    build: ./TaskFlow_backend/Eureka
+    ports:
+      - "8761:8761"
+    networks:
+      - taskflow-net
+
+  task-service:
+    build: ./TaskFlow_backend/Task_service
+    ports:
+      - "8081:8081"
+    environment:
+      eureka.client.service-url.defaultZone: http://eureka:8761/eureka
+    depends_on:
+      - eureka
+    networks:
+      - taskflow-net
+
+  api-gateway:
+    build: ./TaskFlow_backend/ApiGateway
+    ports:
+      - "8085:8085"
+    environment:
+      eureka.client.service-url.defaultZone: http://eureka:8761/eureka
+      spring.security.oauth2.resourceserver.jwt.issuer-uri: http://keycloak:8080/realms/taskflow
+    depends_on:
+      - eureka
+      - keycloak
+    networks:
+      - taskflow-net
+
+  auth-service:
+    build: ./TaskFlow_backend/auth-service
+    ports:
+      - "3000:3000"
+    depends_on:
+      - keycloak
+    networks:
+      - taskflow-net
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - taskflow-net
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - taskflow-net
+
+networks:
+  taskflow-net:
+    driver: bridge
