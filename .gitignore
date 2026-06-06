@@ -1,0 +1,7 @@
+
+**/data/
+**/node_modules/
+**/*.mv.db
+log.txt
+package-lock.json
+test-/

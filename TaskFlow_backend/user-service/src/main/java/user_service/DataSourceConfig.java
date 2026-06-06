@@ -18,10 +18,10 @@ public class DataSourceConfig {
     @Primary
     public DataSource dataSource() {
         HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl("jdbc:postgresql://localhost:5432/userdb");
-        ds.setUsername("postgres");
-        ds.setPassword("pass123");
-        ds.setDriverClassName("org.postgresql.Driver");
+        ds.setJdbcUrl("jdbc:h2:file:./data/taskflow/user");
+        ds.setUsername("sa");
+        ds.setPassword("");
+        ds.setDriverClassName("org.h2.Driver");
         return ds;
     }
 
@@ -34,7 +34,7 @@ public class DataSourceConfig {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         Properties props = new Properties();
-        props.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+        props.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
         props.setProperty("hibernate.hbm2ddl.auto", "update");
         props.setProperty("hibernate.show_sql", "true");
         em.setJpaProperties(props);
