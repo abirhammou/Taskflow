@@ -27,6 +27,8 @@ public class ApiGatewayApplication {
                         .uri("http://localhost:8081"))
                 .route("auth-service", r -> r.path("/auth/**")
                         .uri("http://localhost:3000"))
+                .route("ms-projet", r -> r.path("/api/projets/**", "/api/phases/**", "/api/kpi/**")
+                        .uri("http://localhost:8083"))
                 .build();
 
     }

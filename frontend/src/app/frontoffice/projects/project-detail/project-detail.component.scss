@@ -1,0 +1,54 @@
+.back-link { color: #5d87ff; text-decoration: none; font-size: 14px; font-weight: 600; }
+.back-link:hover { text-decoration: underline; }
+
+.project-avatar {
+  width: 52px; height: 52px; border-radius: 12px; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 22px; flex-shrink: 0;
+}
+
+.fo-status-badge { padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+.fo-prio-badge { padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+
+.fo-info-card {
+  background: #fff; border-radius: 12px; padding: 16px 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  display: flex; flex-direction: column; gap: 4px;
+  .lbl { font-size: 12px; color: #718096; }
+  .val { font-size: 15px; font-weight: 700; color: #2d3748; }
+}
+
+.section-head h5 { font-weight: 700; color: #2d3748; }
+
+.fo-kpi-card {
+  background: #fff; border-radius: 12px; padding: 18px; text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  .k-val { font-size: 1.9rem; font-weight: 700; }
+  .k-lbl { font-size: 12.5px; color: #718096; margin-top: 2px; }
+}
+
+.fo-chart-card {
+  background: #fff; border-radius: 14px; padding: 18px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06); height: 100%;
+  .chart-title { font-size: 14px; font-weight: 700; color: #2d3748; margin-bottom: 6px; }
+}
+
+.fo-phase-list { display: flex; flex-direction: column; gap: 12px; }
+
+.fo-phase-card {
+  background: #fff; border-radius: 12px; padding: 16px 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: box-shadow 0.2s;
+  &:hover { box-shadow: 0 4px 16px rgba(93,135,255,0.12); }
+}
+
+.phase-order {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #eef2ff; color: #5d87ff; font-size: 12px; font-weight: 700; margin-right: 8px;
+}
+.phase-name { font-weight: 600; color: #2d3748; }
+
+.btn-outline-primary, .btn-outline-danger { padding: 4px 12px; font-size: 12px; border-radius: 20px; }
+.btn-outline-primary:hover { background: #5d87ff; color: #fff; }
+.btn-outline-danger:hover { background: #fa5c7c; color: #fff; }
