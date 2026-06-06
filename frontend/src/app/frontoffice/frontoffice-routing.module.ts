@@ -5,6 +5,7 @@ import { LayoutComponent } from './layout/layout.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { TeamsComponent } from './teams/teams.component';
 import { ProjectsComponent } from './projects/projects.component';
+import { ProjectDetailComponent } from './projects/project-detail/project-detail.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AuthGuard } from '../guards/auth.guard';
@@ -20,6 +21,7 @@ const routes: Routes = [
       { path: 'tasks', component: TasksComponent },
       { path: 'teams', component: TeamsComponent },
       { path: 'projects', component: ProjectsComponent },
+      { path: 'projects/:id', component: ProjectDetailComponent },
       { path: 'notifications', component: NotificationsComponent },
       { path: 'profile', component: ProfileComponent },
     ]

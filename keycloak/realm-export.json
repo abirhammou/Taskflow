@@ -44,6 +44,32 @@
   "quickLoginCheckMilliSeconds": 1000,
   "maxDeltaTimeSeconds": 43200,
   "failureFactor": 30,
+  "users": [
+    {
+      "username": "user@taskflow.com",
+      "email": "user@taskflow.com",
+      "firstName": "Test",
+      "lastName": "User",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        { "type": "password", "value": "User@1234", "temporary": false }
+      ],
+      "realmRoles": [ "USER" ]
+    },
+    {
+      "username": "admin@taskflow.com",
+      "email": "admin@taskflow.com",
+      "firstName": "Test",
+      "lastName": "Admin",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        { "type": "password", "value": "Admin@1234", "temporary": false }
+      ],
+      "realmRoles": [ "ADMIN" ]
+    }
+  ],
   "roles": {
     "realm": [
       {

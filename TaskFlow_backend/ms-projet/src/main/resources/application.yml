@@ -1,0 +1,69 @@
+server:
+  # 8081 = task-service, 8082 = user-service -> ms-projet runs on 8083
+  port: 8083
+
+spring:
+  application:
+    name: ms-projet
+
+  datasource:
+    url: jdbc:h2:mem:projetdb;DB_CLOSE_DELAY=-1;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    connection-timeout: 5000
+    listener:
+      simple:
+        auto-startup: true
+        missing-queues-fatal: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+# Noms des microservices coequipiers (noms Eureka du groupe).
+# La KPI temps reel agrege les taches via Feign : 'tache' = nom Eureka du
+# service taches du groupe. NB: task-service expose /task/** sans projetId,
+# donc la KPI reste resiliente (retourne 0) tant que le contrat n'est pas aligne.
+app:
+  services:
+    tache: task-service
+    user: user-service
+  rabbitmq:
+    exchange: taskplatform.exchange
+    queues:
+      projet-events: projet.events.queue
+      tache-events: tache.events.queue
+    routing-keys:
+      projet-created: projet.created
+      projet-late: projet.late
+      tache-completed: tache.completed

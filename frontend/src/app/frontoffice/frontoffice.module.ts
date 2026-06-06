@@ -10,12 +10,14 @@ import { FooterComponent } from './shared/footer/footer.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { TeamsComponent } from './teams/teams.component';
 import { ProjectsComponent } from './projects/projects.component';
+import { ProjectDetailComponent } from './projects/project-detail/project-detail.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { ProfileComponent } from './profile/profile.component';
 import { LayoutComponent } from './layout/layout.component';
 
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     TasksComponent,
     TeamsComponent,
     ProjectsComponent,
+    ProjectDetailComponent,
     NotificationsComponent,
     ProfileComponent,
     LayoutComponent,
@@ -37,6 +40,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     FrontofficeRoutingModule,
     MatSnackBarModule,
     MatDialogModule,
+    NgApexchartsModule,
   ]
 })
 export class FrontofficeModule { }
