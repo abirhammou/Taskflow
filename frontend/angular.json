@@ -104,5 +104,11 @@
         }
       }
     }
+<<<<<<< HEAD
+=======
+  },
+  "cli": {
+    "analytics": false
+>>>>>>> teammodule-frontend
   }
 }

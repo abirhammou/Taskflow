@@ -1,0 +1,55 @@
+<div class="container py-5">
+
+  <!-- Header -->
+  <div class="page-header mb-5">
+    <h2 class="page-title">My Teams</h2>
+    <p class="page-subtitle">Teams you are part of</p>
+  </div>
+
+  <!-- Search -->
+  <div class="search-wrapper mb-4">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        placeholder="Search by name or department..."
+        [(ngModel)]="searchQuery"
+        (input)="search()"
+      />
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading your teams...</p>
+  </div>
+
+  <!-- Teams Grid -->
+  <div class="teams-grid" *ngIf="!isLoading">
+
+    <div class="team-card" *ngFor="let team of filteredTeams; let i = index">
+      <div class="card-banner" [style.background]="getColor(i)">
+        <span class="card-icon">{{ getIcon(i) }}</span>
+        <span class="status-badge" [class.active]="team.isActive" [class.inactive]="!team.isActive">
+          {{ team.isActive ? 'Active' : 'Inactive' }}
+        </span>
+      </div>
+      <div class="card-body">
+        <h5 class="team-name">{{ team.name }}</h5>
+        <p class="team-desc">{{ team.description }}</p>
+        <div class="card-footer-row">
+          <span class="dept-badge">{{ team.department }}</span>
+          <span class="member-count">👥 {{ team.memberCount }} members</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty-state" *ngIf="filteredTeams.length === 0">
+      <span class="empty-icon">🏷️</span>
+      <p>No teams found.</p>
+    </div>
+
+  </div>
+</div>

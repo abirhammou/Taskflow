@@ -1,3 +1,4 @@
+import { TeamsComponent } from '../../../pages/ui-components/teams/teams.component';
 import { NavItem } from './nav-item/nav-item';
 
 export const navItems: NavItem[] = [
@@ -20,7 +21,7 @@ export const navItems: NavItem[] = [
   {
     displayName: 'Teams',
     iconName: 'poker-chip',
-    route: '/dashboard/ui-components/chips',
+    route: '/dashboard/ui-components/teams',
   },
   {
     displayName: 'Tasks',
