@@ -26,15 +26,22 @@
       </ul>
       <ul class="navbar-nav ms-auto align-items-center">
         <li class="nav-item">
-          <a class="nav-link" routerLink="/app/profile">
-            <img src="assets/images/profile/user-1.jpg"
+          <a class="nav-link" routerLink="/app/profile" routerLinkActive="active">
+            <img [src]="avatarUrl"
                  class="avatar-img"
-                 onerror="this.src='https://ui-avatars.com/api/?name=User&background=5d87ff&color=fff'">
-            My Profile
+                 [alt]="username">
+            {{ username }}
           </a>
         </li>
-        <li class="nav-item ms-2">
+        <!-- Only show for ADMIN -->
+        <li class="nav-item ms-2" *ngIf="isAdmin">
           <a class="btn btn-outline-primary btn-sm" routerLink="/dashboard">Admin</a>
+        </li>
+        <!-- Logout -->
+        <li class="nav-item ms-2">
+          <button class="btn btn-outline-danger btn-sm" (click)="logout()">
+            Logout
+          </button>
         </li>
       </ul>
     </div>

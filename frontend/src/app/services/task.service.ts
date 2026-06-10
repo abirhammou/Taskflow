@@ -10,7 +10,7 @@ const API_GATEWAY = 'http://localhost:8085';
 export class TaskService {
   constructor(private http: HttpClient) {}
 
-  getAllTasks(): Observable<Task[]> {
+  getAllTasks(): Observable<Task[]> { 
     return this.http.get<Task[]>(`${API_GATEWAY}/task/getAll`);
   }
 

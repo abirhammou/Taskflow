@@ -16,6 +16,7 @@ import { AuthenticationRoutes } from './authentication.routing';
 
 import { AppSideLoginComponent } from './login/login.component';
 import { AppSideRegisterComponent } from './register/register.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @NgModule({
   imports: [
@@ -29,6 +30,9 @@ import { AppSideRegisterComponent } from './register/register.component';
     FormsModule,
     ReactiveFormsModule,
     TablerIconsModule.pick(TablerIcons),
+    RouterModule,           // ← fixes [routerLink] errors
+    ReactiveFormsModule,
+    MatFormFieldModule,
   ],
   declarations: [
     AppSideLoginComponent,

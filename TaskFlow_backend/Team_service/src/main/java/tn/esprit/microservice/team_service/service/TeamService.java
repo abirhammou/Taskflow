@@ -121,6 +121,25 @@ public class TeamService {
     }
 
     // =========================
+// GET BY DEPARTMENT
+// =========================
+    public List<TeamDTO> getTeamsByDepartment(String department) {
+        return teamRepository.findByDepartment(department)
+                .stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+    // =========================
+// GET ACTIVE TEAMS
+// =========================
+    public List<TeamDTO> getActiveTeams() {
+        return teamRepository.findByIsActiveTrue()
+                .stream()
+                .map(this::toDTO)
+                .toList();
+    }
+    // =========================
     // ENTITY -> DTO
     // =========================
     private TeamDTO toDTO(Team team) {

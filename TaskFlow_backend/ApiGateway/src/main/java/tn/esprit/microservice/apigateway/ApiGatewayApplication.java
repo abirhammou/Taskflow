@@ -25,13 +25,19 @@ public class ApiGatewayApplication {
         return builder.routes()
                 .route("task-service", r -> r.path("/task/**")
                         .uri("http://localhost:8081"))
+                .route("auth-service", r -> r.path("/auth/**")
+                        .uri("http://localhost:3000"))
+                .route("ms-projet", r -> r.path("/api/projets/**", "/api/phases/**", "/api/kpi/**")
+                        .uri("http://localhost:8083"))
+                .route("team-service", r -> r.path("/api/teams/**", "/api/members/**")
+                        .uri("http://localhost:8082"))
                 .build();
     }
 
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200")); // Angular dev server
+        corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
         corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfig.setAllowedHeaders(Arrays.asList("*"));
         corsConfig.setAllowCredentials(true);
