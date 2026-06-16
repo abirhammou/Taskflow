@@ -23,6 +23,14 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers("/auth/**").permitAll()
+                        .pathMatchers(
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs",
+                                "/*/v3/api-docs",
+                                "/webjars/**"
+                        ).permitAll()
                         .pathMatchers("/task/**").authenticated()
                         .anyExchange().authenticated()
                 )
