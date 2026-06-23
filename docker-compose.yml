@@ -2,16 +2,41 @@ version: '3.8'
 
 services:
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: taskflow-rabbitmq
+    hostname: taskflow-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq   # ← named volume fixes permissions
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - taskflow-net
+
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.1
     command: start-dev --import-realm
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
     ports:
       - "8096:8080"
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+      - keycloak-data:/opt/keycloak/data
     networks:
       - taskflow-net
 
@@ -19,6 +44,12 @@ services:
     build: ./TaskFlow_backend/Eureka
     ports:
       - "8761:8761"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8761/actuator/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 20s
     networks:
       - taskflow-net
 
@@ -28,8 +59,33 @@ services:
       - "8081:8081"
     environment:
       eureka.client.service-url.defaultZone: http://eureka:8761/eureka
+      spring.rabbitmq.host: rabbitmq
+      spring.rabbitmq.port: 5672
+      spring.rabbitmq.username: guest
+      spring.rabbitmq.password: guest
     depends_on:
-      - eureka
+      eureka:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - taskflow-net
+
+  project-service:
+    build: ./TaskFlow_backend/Project_service
+    ports:
+      - "8082:8082"
+    environment:
+      eureka.client.service-url.defaultZone: http://eureka:8761/eureka
+      spring.rabbitmq.host: rabbitmq
+      spring.rabbitmq.port: 5672
+      spring.rabbitmq.username: guest
+      spring.rabbitmq.password: guest
+    depends_on:
+      eureka:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     networks:
       - taskflow-net
 
@@ -39,7 +95,7 @@ services:
       - "8085:8085"
     environment:
       eureka.client.service-url.defaultZone: http://eureka:8761/eureka
-      spring.security.oauth2.resourceserver.jwt.issuer-uri: http://keycloak:8080/realms/taskflow
+      spring.security.oauth2.resourceserver.jwt.jwk-set-uri: http://keycloak:8080/realms/taskflow/protocol/openid-connect/certs
     depends_on:
       - eureka
       - keycloak
@@ -50,8 +106,30 @@ services:
     build: ./TaskFlow_backend/auth-service
     ports:
       - "3000:3000"
+    environment:
+      PORT: 3000
+      MONGO_URI: mongodb://mongo:27017/authdb
+      JWT_SECRET: taskflow_secret_key_2024
+      JWT_EXPIRES_IN: 7d
+      EUREKA_HOST: eureka
+      EUREKA_PORT: 8761
+      EUREKA_INSTANCE_HOSTNAME: auth-service
+      EUREKA_INSTANCE_IP: auth-service
     depends_on:
-      - keycloak
+      keycloak:
+        condition: service_started
+      mongo:
+        condition: service_started
+      eureka:
+        condition: service_healthy
+    networks:
+      - taskflow-net
+
+  mongo:
+    image: mongo:7.0
+    container_name: taskflow-mongo
+    ports:
+      - "27017:27017"
     networks:
       - taskflow-net
 
@@ -61,6 +139,10 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
+    depends_on:
+      - task-service
+      - api-gateway
+      - project-service
     networks:
       - taskflow-net
 
@@ -70,9 +152,16 @@ services:
       - "3001:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
     networks:
       - taskflow-net
 
 networks:
   taskflow-net:
     driver: bridge
+
+volumes:
+  keycloak-data:
+  rabbitmq-data:
+

@@ -4,12 +4,24 @@
       <h4 class="mb-1">Projects</h4>
       <p class="text-muted mb-0">All your active and completed projects</p>
     </div>
-    <button class="btn btn-primary">+ New Project</button>
+    <button class="btn btn-primary" (click)="openNewProjectModal()">+ New Project</button>
   </div>
 
-  <div class="row g-4">
+  <div *ngIf="loading" class="text-center text-muted py-5">
+    Loading projects...
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error && projects.length === 0" class="text-center text-muted py-5">
+    No projects yet. Create your first one!
+  </div>
+
+  <div class="row g-4" *ngIf="!loading && !error">
     <div class="col-md-6" *ngFor="let project of projects">
-      <div class="fo-project-card">
+      <div class="fo-project-card" (click)="openDetailPanel(project)" role="button">
         <div class="d-flex justify-content-between align-items-start mb-3">
           <div>
             <span class="project-icon me-2">{{ project.icon }}</span>
@@ -31,13 +43,155 @@
           </div>
         </div>
         <div class="d-flex justify-content-between align-items-center">
-          <div class="member-avatars">
-            <span class="avatar-circle" *ngFor="let m of project.team | slice:0:3"
-                  [title]="m">{{ m[0] }}</span>
+          <span class="avatar-circle" [title]="project.ownerId">{{ (project.ownerId || '?')[0] | uppercase }}</span>
+          <div class="d-flex align-items-center gap-2">
+            <small class="text-muted">Due {{ project.due }}</small>
+            <button class="btn btn-sm btn-outline-primary" (click)="openAssignModal(project, $event)">
+              + Task
+            </button>
           </div>
-          <small class="text-muted">Due {{ project.due }}</small>
         </div>
       </div>
     </div>
   </div>
+</div>
+
+<!-- New Project Modal -->
+<div class="modal-backdrop-custom" *ngIf="showNewProjectModal">
+  <div class="modal-box">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0">New Project</h5>
+      <button type="button" class="btn-close" (click)="closeNewProjectModal()"></button>
+    </div>
+
+    <div class="alert alert-danger" *ngIf="createError">{{ createError }}</div>
+
+    <form (ngSubmit)="submitNewProject()">
+      <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input type="text" class="form-control" [(ngModel)]="newProject.name" name="name" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" [(ngModel)]="newProject.description" name="description" rows="3"></textarea>
+      </div>
+      <div class="row mb-3">
+        <div class="col-6">
+          <label class="form-label">Start date</label>
+          <input type="date" class="form-control" [(ngModel)]="newProject.startDate" name="startDate" required>
+        </div>
+        <div class="col-6">
+          <label class="form-label">End date</label>
+          <input type="date" class="form-control" [(ngModel)]="newProject.endDate" name="endDate">
+        </div>
+      </div>
+      <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeNewProjectModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary" [disabled]="creating">
+          {{ creating ? 'Creating...' : 'Create Project' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Assign Task Modal -->
+<div class="modal-backdrop-custom" *ngIf="showAssignModal">
+  <div class="modal-box">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0">Assign Task to "{{ selectedProject?.name }}"</h5>
+      <button type="button" class="btn-close" (click)="closeAssignModal()"></button>
+    </div>
+
+    <div class="alert alert-danger" *ngIf="assignError">{{ assignError }}</div>
+
+    <div *ngIf="availableTasks.length === 0" class="text-muted">
+      No unassigned tasks available.
+    </div>
+
+    <form *ngIf="availableTasks.length > 0" (ngSubmit)="submitAssign()">
+      <div class="mb-3">
+        <label class="form-label">Task</label>
+        <select class="form-select" [(ngModel)]="selectedTaskId" name="taskId" required>
+          <option [ngValue]="null" disabled>Select a task</option>
+          <option *ngFor="let t of availableTasks" [ngValue]="t.id">{{ t.title }}</option>
+        </select>
+      </div>
+      <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeAssignModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary" [disabled]="assigning || !selectedTaskId">
+          {{ assigning ? 'Assigning...' : 'Assign' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Project Detail Side Panel -->
+<div class="detail-backdrop" *ngIf="showDetailPanel" (click)="closeDetailPanel()"></div>
+
+<div class="detail-panel" [class.open]="showDetailPanel">
+  <ng-container *ngIf="detailProject as project">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <div>
+        <span class="project-icon me-2" style="font-size:1.5rem;">{{ project.icon }}</span>
+        <span class="project-name" style="font-size:1.2rem;">{{ project.name }}</span>
+      </div>
+      <button type="button" class="btn-close" (click)="closeDetailPanel()"></button>
+    </div>
+
+    <span class="fo-status-badge mb-3 d-inline-block" [ngClass]="'status-' + project.status">
+      {{ project.status }}
+    </span>
+
+    <p class="text-muted">{{ project.description || 'No description provided.' }}</p>
+
+    <div class="row g-2 mb-3">
+      <div class="col-6">
+        <small class="text-muted d-block">Owner</small>
+        <strong>{{ project.ownerId || '—' }}</strong>
+      </div>
+      <div class="col-6">
+        <small class="text-muted d-block">Due</small>
+        <strong>{{ project.due }}</strong>
+      </div>
+      <div class="col-6">
+        <small class="text-muted d-block">Start</small>
+        <strong>{{ formatDate(project.startDate) }}</strong>
+      </div>
+      <div class="col-6">
+        <small class="text-muted d-block">Progress</small>
+        <strong [style.color]="project.color">{{ project.progress }}%</strong>
+      </div>
+    </div>
+
+    <div class="progress mb-4" style="height:8px;border-radius:4px;">
+      <div class="progress-bar" [style.width]="project.progress + '%'"
+           [style.background]="project.color" style="border-radius:4px;"></div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h6 class="mb-0">Tasks ({{ detailTasks.length }})</h6>
+      <button class="btn btn-sm btn-outline-primary" (click)="openAssignModal(project)">
+        + Add Task
+      </button>
+    </div>
+
+    <div *ngIf="detailTasks.length === 0" class="text-muted text-center py-4">
+      No tasks assigned yet.
+    </div>
+
+    <ul class="list-group" *ngIf="detailTasks.length > 0">
+      <li class="list-group-item d-flex justify-content-between align-items-start"
+          *ngFor="let task of detailTasks">
+        <div class="d-flex flex-column">
+          <span [class.text-decoration-line-through]="task.completed">{{ task.title }}</span>
+          <small class="text-muted">Due {{ formatDate(task.dueDate) }}</small>
+        </div>
+        <span class="badge" [ngClass]="task.completed ? 'bg-success' : 'bg-secondary'">
+          {{ task.completed ? 'Done' : 'Pending' }}
+        </span>
+      </li>
+    </ul>
+  </ng-container>
 </div>

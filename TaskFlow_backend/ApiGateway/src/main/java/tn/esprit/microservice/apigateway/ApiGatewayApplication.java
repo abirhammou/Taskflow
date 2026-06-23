@@ -24,14 +24,21 @@ public class ApiGatewayApplication {
     public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("task-service", r -> r.path("/task/**")
-                        .uri("http://localhost:8081"))
+                        .uri("lb://task-service"))
                 .route("auth-service", r -> r.path("/auth/**")
-                        .uri("http://localhost:3000"))
+                        .uri("lb://auth-service"))
+                .route("project-service", r -> r.path("/project/**")
+                        .uri("lb://project-service"))          // ← add this
                 .route("task-service-docs", r -> r.path("/task-service/v3/api-docs")
                         .filters(f -> f.rewritePath("/task-service/v3/api-docs", "/v3/api-docs"))
                         .uri("lb://task-service"))
+                .route("project-service-docs", r -> r.path("/project-service/v3/api-docs")     // ← nouveau
+                        .filters(f -> f.rewritePath("/project-service/v3/api-docs", "/v3/api-docs"))
+                        .uri("lb://project-service"))
+                .route("auth-service-docs", r -> r.path("/auth-service/api-docs")              // ← nouveau
+                        .filters(f -> f.rewritePath("/auth-service/api-docs", "/api-docs"))
+                        .uri("lb://auth-service"))
                 .build();
-
     }
 
     @Bean

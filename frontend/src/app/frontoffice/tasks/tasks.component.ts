@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TaskService } from '../../services/task.service';
-import { Task, TaskStats } from '../../models/task.model';
+import { Task } from '../../models/task.model';
 import { TaskDialogComponent } from '../../dialogs/task-dialog.component';
+import { AuthService } from '../../services/auth.service'; // ← add
 
 @Component({
   selector: 'app-tasks',
@@ -27,15 +28,17 @@ export class TasksComponent implements OnInit {
   constructor(
     private taskService: TaskService,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private auth: AuthService  // ← added
   ) {}
 
   ngOnInit(): void {
     this.loadTasks();
   }
 
-  loadTasks(): void {
-    this.taskService.getAllTasks().subscribe({
+  async loadTasks(): Promise<void> {
+    const userId = await this.auth.getMongoUserId();
+    this.taskService.getTasksByUser(userId).subscribe({
       next: (data) => {
         this.tasks = data;
         this.updateStats();
@@ -49,7 +52,6 @@ export class TasksComponent implements OnInit {
     const total = this.tasks.length;
     const completed = this.tasks.filter(t => t.completed).length;
     const pending = this.tasks.filter(t => !t.completed).length;
-    // "In Progress" can be the same as pending, or you can define a separate field later
     const inProgress = pending;
     this.stats = [
       { label: 'Total Tasks', value: total, color: '#5d87ff' },
@@ -61,15 +63,13 @@ export class TasksComponent implements OnInit {
 
   applyFilter(): void {
     let filtered = this.tasks;
-    // Filter by tab
     if (this.activeTab === 'Completed') {
       filtered = filtered.filter(t => t.completed);
     } else if (this.activeTab === 'Pending') {
       filtered = filtered.filter(t => !t.completed);
     } else if (this.activeTab === 'In Progress') {
-      filtered = filtered.filter(t => !t.completed); // same as pending for now
+      filtered = filtered.filter(t => !t.completed);
     }
-    // Filter by search term
     if (this.searchTerm.trim()) {
       const term = this.searchTerm.toLowerCase();
       filtered = filtered.filter(t =>
@@ -86,44 +86,40 @@ export class TasksComponent implements OnInit {
   }
 
   openTaskDialog(task?: Task): void {
-    const dialogRef = this.dialog.open(TaskDialogComponent, {
-      width: '500px',
-      data: task ? { ...task } : null
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        if (task) {
-          this.taskService.updateTask(task.id, result).subscribe({
-            next: () => {
-              this.loadTasks();
-              this.showSuccess('Task updated');
-            },
-            error: () => this.showError('Update failed')
-          });
-        } else {
-          this.taskService.addTask(result).subscribe({
-            next: () => {
-              this.loadTasks();
-              this.showSuccess('Task added');
-            },
-            error: () => this.showError('Add failed')
-          });
-        }
-      }
-    });
-  }
+  const dialogRef = this.dialog.open(TaskDialogComponent, {
+    width: '500px',
+    data: task ? { ...task } : null
+  });
 
-  deleteTask(id: number): void {
-    if (confirm('Are you sure you want to delete this task?')) {
-      this.taskService.deleteTask(id).subscribe({
-        next: () => {
-          this.loadTasks();
-          this.showSuccess('Task deleted');
-        },
+  dialogRef.afterClosed().subscribe(async result => {  // ← async
+    if (result) {
+      if (task) {
+        this.taskService.updateTask(task.id, result).subscribe({
+          next: () => { this.loadTasks(); this.showSuccess('Task updated'); },
+          error: () => this.showError('Update failed')
+        });
+      } else {
+        const requesterId = await this.auth.getMongoUserId();  // ← await MongoDB _id
+        const payload = { ...result, userId: requesterId };
+        this.taskService.addTask(payload, requesterId).subscribe({
+          next: () => { this.loadTasks(); this.showSuccess('Task added'); },
+          error: () => this.showError('Add failed')
+        });
+      }
+    }
+  });
+}
+
+deleteTask(id: number): void {
+  if (confirm('Are you sure you want to delete this task?')) {
+    this.auth.getMongoUserId().then(requesterId => {  // ← await MongoDB _id
+      this.taskService.deleteTask(id, requesterId).subscribe({
+        next: () => { this.loadTasks(); this.showSuccess('Task deleted'); },
         error: () => this.showError('Delete failed')
       });
-    }
+    });
   }
+}
 
   toggleComplete(task: Task): void {
     const updated = { ...task, completed: !task.completed };

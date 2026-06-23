@@ -2,23 +2,33 @@ export interface Task {
   id: number;
   title: string;
   description: string;
-  dueDate: string;   // yyyy-MM-dd
+  dueDate: string;
   completed: boolean;
+  userId: string;
 }
 
-// Matches your backend TaskDTO
 export interface TaskDTO {
   title: string;
   description: string;
   dueDate: string;
   completed: boolean;
+  userId: string; // ← add this so the backend knows who the task belongs to
 }
 
-// Stats returned from /task/stats
 export interface TaskStats {
   totalTasks: number;
   completedTasks: number;
   pendingTasks: number;
   overdueTasks: number;
-  completionRate: number;   // e.g., 75.5 → 75.5%
+  completionRate: number;
+}
+
+export interface UserInfo {
+  username: string;
+  email: string;
+  role: string;
+}
+
+export interface TaskWithUser extends Task {
+  assignee: UserInfo | null;
 }

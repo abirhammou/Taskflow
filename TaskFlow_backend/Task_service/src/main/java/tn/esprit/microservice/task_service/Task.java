@@ -30,4 +30,5 @@ public class Task {
     private LocalDate dueDate;
     private boolean completed;
 
+    private String userId;
 }

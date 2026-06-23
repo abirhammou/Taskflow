@@ -22,4 +22,7 @@ public class TaskDTO {
     private LocalDate dueDate;
 
     private boolean completed;
+
+    @NotBlank(message = "userId is required")
+    private String userId;
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-badge',
@@ -6,15 +7,43 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppBadgeComponent implements OnInit {
 
-  constructor() { }
+  users: any[] = [];
+  filteredUsers: any[] = [];
+  searchTerm = '';
+  loading = false;
+  totalUsers = 0;
+  totalRegular = 0;
+  totalAdmins = 0;
+
+  constructor(private auth: AuthService) {}
 
   ngOnInit(): void {
+    this.loadUsers();
   }
 
-  hidden = false;
+  loadUsers(): void {
+  this.loading = true;
+  this.auth.getAllUsers().subscribe({
+    next: (data) => {
+      this.users = data;
+      this.filteredUsers = data;
+      this.totalUsers = data.length;
+      this.totalRegular = data.filter(u => u.role === 'USER').length;
+      this.totalAdmins = data.filter(u => u.role === 'ADMIN').length;
+      this.loading = false;
+    },
+    error: () => this.loading = false
+  });
+}
 
-  toggleBadgeVisibility() {
-    this.hidden = !this.hidden;
+  onSearch(event: Event): void {
+    const term = (event.target as HTMLInputElement).value.toLowerCase();
+    this.searchTerm = term;
+    this.filteredUsers = this.users.filter(u =>
+      u.username.toLowerCase().includes(term) ||
+      u.email.toLowerCase().includes(term) ||
+      u.role.toLowerCase().includes(term)
+    );
   }
 
 }

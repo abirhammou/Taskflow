@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 // GET /auth/users
 exports.getAllUsers = async (req, res) => {
@@ -70,6 +71,40 @@ exports.getProfileByEmail = async (req, res) => {
         const user = await User.findOne({ email: req.params.email }).select('-password');
         if (!user) return res.status(404).json({ message: 'User not found' });
         res.json(user);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+// POST /auth/register
+exports.register = async (req, res) => {
+    try {
+        const { username, email, password, role } = req.body;
+
+        if (!username || !email || !password) {
+            return res.status(400).json({ message: 'username, email and password are required' });
+        }
+
+        const existing = await User.findOne({ $or: [{ username }, { email }] });
+        if (existing) {
+            return res.status(409).json({ message: 'Username or email already in use' });
+        }
+
+        const user = new User({
+            username,
+            email,
+            password,
+            role: role === 'ADMIN' ? 'ADMIN' : 'USER' // defaults to USER, can't self-promote unless explicitly passed
+        });
+
+        await user.save();
+
+        res.status(201).json({
+            id: user._id,
+            username: user.username,
+            email: user.email,
+            role: user.role
+        });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

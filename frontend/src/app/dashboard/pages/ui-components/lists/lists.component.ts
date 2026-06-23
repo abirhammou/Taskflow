@@ -2,13 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TaskService } from '../../../../services/task.service';
-import { Task, TaskStats } from '../../../../models/task.model';
+import { Task, TaskWithUser, TaskStats } from '../../../../models/task.model';
 import { TaskDialogComponent } from '../../../../dialogs/task-dialog.component';
-
-export interface Section {
-  name: string;
-  updated: Date;
-}
+import { AuthService } from '../../../../services/auth.service'; // ← add
 
 @Component({
   selector: 'app-lists',
@@ -16,8 +12,8 @@ export interface Section {
   styleUrls: ['./lists.component.scss']
 })
 export class AppListsComponent implements OnInit {
-  tasks: Task[] = [];
-  filteredTasks: Task[] = [];
+  tasks: TaskWithUser[] = [];        // ← was Task[]
+filteredTasks: TaskWithUser[] = [];
   searchTerm: string = '';
   stats: TaskStats = {
     totalTasks: 0,
@@ -30,7 +26,8 @@ export class AppListsComponent implements OnInit {
   constructor(
     private taskService: TaskService,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private auth: AuthService  // ← add
   ) {}
 
   ngOnInit(): void {
@@ -39,11 +36,8 @@ export class AppListsComponent implements OnInit {
   }
 
   loadTasks(): void {
-    this.taskService.getAllTasks().subscribe({
-      next: (data) => {
-        this.tasks = data;
-        this.applyFilter();
-      },
+    this.taskService.getAllTasksWithUsers().subscribe({
+      next: (data) => { this.tasks = data; this.applyFilter(); },
       error: () => this.showError('Failed to load tasks')
     });
   }
@@ -73,50 +67,40 @@ export class AppListsComponent implements OnInit {
   }
 
   openTaskDialog(task?: Task): void {
-    const dialogRef = this.dialog.open(TaskDialogComponent, {
-      width: '500px',
-      data: task ? { ...task } : null
-    });
+  const dialogRef = this.dialog.open(TaskDialogComponent, {
+    width: '500px',
+    data: task ? { ...task } : null
+  });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        if (task) {
-          // Update
-          this.taskService.updateTask(task.id, result).subscribe({
-            next: () => {
-              this.loadTasks();
-              this.loadStats();
-              this.showSuccess('Task updated');
-            },
-            error: () => this.showError('Update failed')
-          });
-        } else {
-          // Add
-          this.taskService.addTask(result).subscribe({
-            next: () => {
-              this.loadTasks();
-              this.loadStats();
-              this.showSuccess('Task added');
-            },
-            error: () => this.showError('Add failed')
-          });
-        }
+  dialogRef.afterClosed().subscribe(async result => {
+    if (result) {
+      if (task) {
+        this.taskService.updateTask(task.id, result).subscribe({
+          next: () => { this.loadTasks(); this.loadStats(); this.showSuccess('Task updated'); },
+          error: () => this.showError('Update failed')
+        });
+      } else {
+        const requesterId = await this.auth.getMongoUserId();
+        const payload = { ...result, userId: requesterId };
+        this.taskService.addTask(payload, requesterId).subscribe({
+          next: () => { this.loadTasks(); this.loadStats(); this.showSuccess('Task added'); },
+          error: () => this.showError('Add failed')
+        });
       }
-    });
-  }
+    }
+  });
+}
 
-  deleteTask(id: number): void {
-    if (confirm('Are you sure you want to delete this task?')) {
-      this.taskService.deleteTask(id).subscribe({
-        next: () => {
-          this.loadTasks();
-          this.loadStats();
-          this.showSuccess('Task deleted');
-        },
+deleteTask(id: number): void {
+  if (confirm('Are you sure you want to delete this task?')) {
+    this.auth.getMongoUserId().then(requesterId => {
+      this.taskService.deleteTask(id, requesterId).subscribe({
+        next: () => { this.loadTasks(); this.loadStats(); this.showSuccess('Task deleted'); },
         error: () => this.showError('Delete failed')
       });
-    }
+    });
   }
+}
 
   toggleStatus(task: Task): void {
     const updated = { ...task, completed: !task.completed };
@@ -138,4 +122,3 @@ export class AppListsComponent implements OnInit {
     this.snackBar.open(msg, 'Close', { duration: 5000, panelClass: 'error-snackbar' });
   }
 }
-

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import Keycloak from 'keycloak-js';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -91,4 +92,16 @@ export class AuthService {
   getProfileByEmail(email: string) {
     return this.http.get<any>(`${this.NODE_API}/profile/email/${email}`);
   }
+
+  async getMongoUserId(): Promise<string> {
+    const email = this.keycloak.tokenParsed?.['email'] || '';
+    const user = await firstValueFrom(
+      this.http.get<any>(`${this.NODE_API}/profile/email/${email}`)
+  );
+  return user._id;
+}
+
+getAllUsers() {
+  return this.http.get<any[]>(`${this.NODE_API}/users`);
+}
 }

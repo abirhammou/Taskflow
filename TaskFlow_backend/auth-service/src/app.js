@@ -2,16 +2,26 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const Eureka = require('eureka-js-client').Eureka;
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');
 const authRoutes = require('./routes/auth.routes');
 const User = require('./models/User');
 
 const app = express();
+const client = require('prom-client');
+client.collectDefaultMetrics();
 
 app.use(express.json());
 
 app.get('/actuator/health', (req, res) => res.json({ status: 'UP' }));
 app.get('/health', (req, res) => res.json({ status: 'UP' }));
 
+app.get('/metrics', async (req, res) => {
+    res.set('Content-Type', client.register.contentType);
+    res.end(await client.register.metrics());
+});
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec)); // ← Swagger UI
 app.use('/auth', authRoutes);
 
 // ✅ Seed admin if not exists
@@ -35,26 +45,33 @@ mongoose.connect(process.env.MONGO_URI)
     .then(async () => {
         console.log('✅ MongoDB connected');
 
-        await seedAdmin(); // ← runs once on startup
+        await seedAdmin();
 
         app.listen(process.env.PORT, () => {
             console.log(`🚀 Auth service running on port ${process.env.PORT}`);
 
+            const instanceHostname = process.env.EUREKA_INSTANCE_HOSTNAME || 'localhost';
+            const instanceIp = process.env.EUREKA_INSTANCE_IP || '127.0.0.1';
+            const eurekaHost = process.env.EUREKA_HOST || 'localhost';
+            const eurekaPort = process.env.EUREKA_PORT || 8761;
+
             const eurekaClient = new Eureka({
                 instance: {
                     app: 'AUTH-SERVICE',
-                    hostName: 'localhost',
-                    ipAddr: '127.0.0.1',
+                    hostName: instanceHostname,
+                    ipAddr: instanceIp,
                     port: { '$': parseInt(process.env.PORT), '@enabled': true },
                     vipAddress: 'auth-service',
                     dataCenterInfo: { '@class': 'com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo', name: 'MyOwn' },
-                    healthCheckUrl: `http://localhost:${process.env.PORT}/health`,
-                    statusPageUrl:  `http://localhost:${process.env.PORT}/health`,
+                    healthCheckUrl: `http://${instanceHostname}:${process.env.PORT}/health`,
+                    statusPageUrl:  `http://${instanceHostname}:${process.env.PORT}/health`,
                 },
                 eureka: {
-                    host: 'localhost',
-                    port: 8761,
+                    host: eurekaHost,
+                    port: eurekaPort,
                     servicePath: '/eureka/apps/',
+                    maxRetries: 15,
+                    requestRetryDelay: 3000,
                 },
             });
 
